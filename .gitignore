@@ -10,8 +10,6 @@ MangoSneaker/nbbuild/
 MangoSneaker/dist/
 MangoSneaker/nbdist/
 MangoSneaker/.nb-gradle/
-MangoSneaker/nbproject/
-MangoSneaker/build.xml
 
 
 # End of https://www.toptal.com/developers/gitignore/api/netbeans
