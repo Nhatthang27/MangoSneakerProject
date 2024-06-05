@@ -1,27 +1,27 @@
 USE MangoSneakerDB;
 
-INSERT INTO Category (nameCategory) VALUES ('Nike');
-INSERT INTO Category (nameCategory) VALUES ('Adidas');
-INSERT INTO Category (nameCategory) VALUES ('Converse');
+INSERT INTO Category (CategoryName) VALUES ('Nike');
+INSERT INTO Category (CategoryName) VALUES ('Adidas');
+INSERT INTO Category (CategoryName) VALUES ('Converse');
 
 INSERT INTO Customer (FirstName, LastName, Mail, Username, Password, Phone) VALUES
 ('John', 'Doe', 'john@example.com', 'johndoe', 'password1', '0123456789'),
-('Jane', 'Smith', 'jane@example.com', 'janesmith', 'password2', '0123456789'),
-('Alice', 'Johnson', 'alice@example.com', 'alicejohnson', 'password3', '0123456789'),
-('Bob', 'Brown', 'bob@example.com', 'bobbrown', 'password4', '0123456789'),
-('Charlie', 'Davis', 'charlie@example.com', 'charliedavis', 'password5', '0123456789'),
-('David', 'Evans', 'david@example.com', 'davidevans', 'password6', '0123456789'),
-('Eve', 'Wilson', 'eve@example.com', 'evewilson', 'password7', '0123456789'),
-('Frank', 'Miller', 'frank@example.com', 'frankmiller', 'password8', '0123456789'),
-('Grace', 'Moore', 'grace@example.com', 'gracemoore', 'password9', '0123456789'),
-('Hank', 'Taylor', 'hank@example.com', 'hanktaylor', 'password10', '0123456789'),
-('Ivy', 'Anderson', 'ivy@example.com', 'ivyanderson', 'password11', '0123456789'),
-('Jack', 'Thomas', 'jack@example.com', 'jackthomas', 'password12', '0123456789'),
-('Kathy', 'Jackson', 'kathy@example.com', 'kathyjackson', 'password13', '0123456789'),
-('Leo', 'White', 'leo@example.com', 'leowhite', 'password14', '0123456789'),
-('Mona', 'Martin', 'mona@example.com', 'monamartin', 'password15', '0123456789');
+('Jane', 'Smith', 'jane@example.com', 'janesmith', 'password2', '0283847625'),
+('Alice', 'Johnson', 'alice@example.com', 'alicejohnson', 'password3', '092837423'),
+('Bob', 'Brown', 'bob@example.com', 'bobbrown', 'password4', '0192837465'),
+('Charlie', 'Davis', 'charlie@example.com', 'charliedavis', 'password5', '0394820283'),
+('David', 'Evans', 'david@example.com', 'davidevans', 'password6', '0394820839'),
+('Eve', 'Wilson', 'eve@example.com', 'evewilson', 'password7', '0394039482'),
+('Frank', 'Miller', 'frank@example.com', 'frankmiller', 'password8', '0538945220'),
+('Grace', 'Moore', 'grace@example.com', 'gracemoore', 'password9', '0425849302'),
+('Hank', 'Taylor', 'hank@example.com', 'hanktaylor', 'password10', '0495039482'),
+('Ivy', 'Anderson', 'ivy@example.com', 'ivyanderson', 'password11', '0492837503'),
+('Jack', 'Thomas', 'jack@example.com', 'jackthomas', 'password12', '0657483903'),
+('Kathy', 'Jackson', 'kathy@example.com', 'kathyjackson', 'password13', '0887888930'),
+('Leo', 'White', 'leo@example.com', 'leowhite', 'password14', '0999857466'),
+('Mona', 'Martin', 'mona@example.com', 'monamartin', 'password15', '0111118273');
 
-INSERT INTO Product (Category, NameProduct, Quantity, Price, Image, Discount) VALUES
+INSERT INTO Product (CategoryID, ProductName, Quantity, Price, Image, Discount) VALUES
 (1, 'Nike Air Max', 100, 150.00, 'nike_air_max.jpg', 10.0),
 (1, 'Nike Revolution', 200, 120.00, 'nike_revolution.jpg', 5.0),
 (2, 'Adidas Ultraboost', 150, 180.00, 'adidas_ultraboost.jpg', 15.0),
@@ -38,24 +38,24 @@ INSERT INTO Product (Category, NameProduct, Quantity, Price, Image, Discount) VA
 (2, 'Adidas Gazelle', 140, 85.00, 'adidas_gazelle.jpg', 10.0),
 (3, 'Converse Jack Purcell', 90, 95.00, 'converse_jack_purcell.jpg', 5.0);
 
-INSERT INTO Orders (CustomerID, [Date], OrdersID) VALUES
-(1, '2024-05-01', 1),
-(2, '2024-05-02', 2),
-(3, '2024-05-03', 3),
-(4, '2024-05-04', 4),
-(5, '2024-05-05', 5),
-(6, '2024-05-06', 6),
-(7, '2024-05-07', 7),
-(8, '2024-05-08', 8),
-(9, '2024-05-09', 9),
-(10, '2024-05-10', 10),
-(11, '2024-05-11', 11),
-(12, '2024-05-12', 12),
-(13, '2024-05-13', 13),
-(14, '2024-05-14', 14),
-(15, '2024-05-15', 15);
+INSERT INTO [Order] (CustomerID, [Date]) VALUES
+(1, '2024-05-01'),
+(2, '2024-05-02'),
+(3, '2024-05-03'),
+(4, '2024-05-04'),
+(5, '2024-05-05'),
+(6, '2024-05-06'),
+(7, '2024-05-07'),
+(8, '2024-05-08'),
+(9, '2024-05-09'),
+(10, '2024-05-10'),
+(11, '2024-05-11'),
+(12, '2024-05-12'),
+(13, '2024-05-13'),
+(14, '2024-05-14'),
+(15, '2024-05-15');
 
-INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice) VALUES
+INSERT INTO OrderDetail (OrderID, ProductID, Quantity, UnitPrice) VALUES
 (1, 1, 2, 150.00),
 (2, 3, 1, 180.00),
 (3, 5, 3, 70.00),
@@ -72,7 +72,7 @@ INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice) VALUES
 (14, 14, 1, 85.00),
 (15, 15, 2, 95.00);
 
-INSERT INTO CartDetails (CustomerID, ProductID, Quantity) VALUES
+INSERT INTO CartDetail (CustomerID, ProductID, Quantity) VALUES
 (1, 1, 2),
 (2, 3, 1),
 (3, 5, 3),
@@ -91,7 +91,7 @@ INSERT INTO CartDetails (CustomerID, ProductID, Quantity) VALUES
 
 SELECT * FROM Category
 SELECT * FROM Customer
-SELECT * FROM Orders
+SELECT * FROM [Order]
 SELECT * FROM Product
-SELECT * FROM CartDetails
-SELECT * FROM OrderDetails
+SELECT * FROM CartDetail
+SELECT * FROM OrderDetail
