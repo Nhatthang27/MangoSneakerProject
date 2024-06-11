@@ -77,8 +77,72 @@ ADD CONSTRAINT CK_Product_Discount_NonNegative CHECK (Discount >= 0)
 ALTER TABLE ProductSize
 ADD CONSTRAINT CK_ProductSize_Quantity_Positive CHECK (Quantity > 0)
 
+ALTER TABLE Customer 
+ADD isDeleted BIT DEFAULT 0;
+
+ALTER TABLE Customer
+ADD CONSTRAINT DF_Customer_isDeleted DEFAULT 0 FOR isDeleted;
+
+ALTER TABLE Customer
+ALTER COLUMN isDeleted BIT NOT NULL;
+
+GO
+CREATE TRIGGER trg_After_Customer_isDeleted_Change
+ON Customer
+AFTER UPDATE
+AS
+BEGIN
+	DELETE FROM CartDetail
+	WHERE CustomerID IN (SELECT ID FROM inserted WHERE isDeleted = 1)
+END;
+GO
 
 
+CREATE TRIGGER trg_CheckUniqueCustomer
+ON Customer
+INSTEAD OF INSERT
+AS
+BEGIN
+    -- Declare variables to store the conflicting customer ID
+    DECLARE @ConflictID INT;
 
---DROP DATABASE MangoSneakerDB
+    -- Check for duplicate username
+    IF EXISTS (
+        SELECT 1
+        FROM Customer AS c
+        JOIN inserted AS i ON c.username = i.username
+        WHERE c.isDeleted = 0 AND i.isDeleted = 0
+    )
+    BEGIN
+        RAISERROR ('Duplicate username found for non-deleted customer.', 16, 1);
+        RETURN;
+    END
 
+    -- Check for duplicate phone
+    IF EXISTS (
+        SELECT 1
+        FROM Customer AS c
+        JOIN inserted AS i ON c.phone = i.phone
+        WHERE c.isDeleted = 0 AND i.isDeleted = 0
+    )
+    BEGIN
+        RAISERROR ('Duplicate phone found for non-deleted customer.', 16, 1);
+        RETURN;
+    END
+
+    -- Check for duplicate mail
+    IF EXISTS (
+        SELECT 1
+        FROM Customer AS c
+        JOIN inserted AS i ON c.mail = i.mail
+        WHERE c.isDeleted = 0 AND i.isDeleted = 0
+    )
+    BEGIN
+        RAISERROR ('Duplicate mail found for non-deleted customer.', 16, 1);
+        RETURN;
+    END
+
+	INSERT INTO Customer (FirstName, LastName, Mail, Username, [Password], Phone, isDeleted)
+    SELECT FirstName, LastName, Mail, Username, [Password], Phone, isDeleted FROM inserted;
+END;
+GO

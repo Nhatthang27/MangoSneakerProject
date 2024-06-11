@@ -1,3 +1,15 @@
 /*
 Custom Css
 */
+.card-img {
+    width: 100%;
+    height: 300px; /* Hoặc chiều cao bạn muốn */
+    object-fit: cover;
+}
+
+.row>* {
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) / 4);
+    padding-left: calc(var(--bs-gutter-x) / 4);
+    margin-top: var(--bs-gutter-y);
+}

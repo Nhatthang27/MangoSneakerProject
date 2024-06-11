@@ -77,7 +77,7 @@ https://templatemo.com/tm-559-zay-shop
                             <a class="nav-link" href="about.jsp">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="shop.jsp">Shop</a>
+                            <a class="nav-link" href="category">Shop</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="contact.jsp">Contact</a>
