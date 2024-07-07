@@ -2,20 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model;
+package mangosneaker.model.dto;
 
 /**
  *
  * @author Nhatthang
  */
-public class Category {
+public class CategoryDTO {
     private int id;
     private String name;
 
-    public Category() {
+    public CategoryDTO() {
     }
 
-    public Category(int id, String name) {
+    public CategoryDTO(int id, String name) {
         this.id = id;
         this.name = name;
     }

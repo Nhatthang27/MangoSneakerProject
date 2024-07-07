@@ -13,3 +13,19 @@ Custom Css
     padding-left: calc(var(--bs-gutter-x) / 4);
     margin-top: var(--bs-gutter-y);
 }
+
+.button-reset {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none; /* Loại bỏ viền focus trên các trình duyệt nhất định */
+}
+
+.hover-pointer {
+    cursor: pointer;
+}

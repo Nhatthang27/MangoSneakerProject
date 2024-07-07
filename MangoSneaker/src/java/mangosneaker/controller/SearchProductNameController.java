@@ -3,26 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller;
+package mangosneaker.controller;
 
-import dal.CategoryDao;
-import dal.ProductDao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Category;
 
 /**
  *
  * @author Nhatthang
  */
-@WebServlet(name="CategoryServlet", urlPatterns={"/category"})
-public class CategoryServlet extends HttpServlet {
+public class SearchProductNameController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -34,13 +28,18 @@ public class CategoryServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        CategoryDao cateDao = new CategoryDao();
-        List<Category> cateList = cateDao.getAll();
-        request.setAttribute("cateList", cateList);
-        if (request.getParameter("cid") == null || request.getParameter("cid").isEmpty()) {
-            request.setAttribute("proList", new ProductDao().getProductsByCid(0));
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet SearchProductByName</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet SearchProductByName at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        request.getRequestDispatcher("shop.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

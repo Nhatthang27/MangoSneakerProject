@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model;
+package mangosneaker.model.dto;
 
 /**
  *
  * @author Nhatthang
  */
-public class Product {
+public class ProductDTO {
     
     private int id;
     private int categoryId;
@@ -17,10 +17,10 @@ public class Product {
     private String img;
     private double discount;
 
-    public Product() {
+    public ProductDTO() {
     }
 
-    public Product(int id, int categoryId, String name, double price, String img, double discount) {
+    public ProductDTO(int id, int categoryId, String name, double price, String img, double discount) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;

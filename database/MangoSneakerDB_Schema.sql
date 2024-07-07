@@ -97,52 +97,12 @@ BEGIN
 END;
 GO
 
+ALTER TABLE Customer
+ADD CONSTRAINT UQ_Customer_Mail UNIQUE (Mail);
 
-CREATE TRIGGER trg_CheckUniqueCustomer
-ON Customer
-INSTEAD OF INSERT
-AS
-BEGIN
-    -- Declare variables to store the conflicting customer ID
-    DECLARE @ConflictID INT;
+ALTER TABLE Customer
+ADD CONSTRAINT UQ_Customer_Username UNIQUE (Username);
 
-    -- Check for duplicate username
-    IF EXISTS (
-        SELECT 1
-        FROM Customer AS c
-        JOIN inserted AS i ON c.username = i.username
-        WHERE c.isDeleted = 0 AND i.isDeleted = 0
-    )
-    BEGIN
-        RAISERROR ('Duplicate username found for non-deleted customer.', 16, 1);
-        RETURN;
-    END
+ALTER TABLE Customer
+ADD CONSTRAINT UQ_Customer_Phone UNIQUE (Phone);
 
-    -- Check for duplicate phone
-    IF EXISTS (
-        SELECT 1
-        FROM Customer AS c
-        JOIN inserted AS i ON c.phone = i.phone
-        WHERE c.isDeleted = 0 AND i.isDeleted = 0
-    )
-    BEGIN
-        RAISERROR ('Duplicate phone found for non-deleted customer.', 16, 1);
-        RETURN;
-    END
-
-    -- Check for duplicate mail
-    IF EXISTS (
-        SELECT 1
-        FROM Customer AS c
-        JOIN inserted AS i ON c.mail = i.mail
-        WHERE c.isDeleted = 0 AND i.isDeleted = 0
-    )
-    BEGIN
-        RAISERROR ('Duplicate mail found for non-deleted customer.', 16, 1);
-        RETURN;
-    END
-
-	INSERT INTO Customer (FirstName, LastName, Mail, Username, [Password], Phone, isDeleted)
-    SELECT FirstName, LastName, Mail, Username, [Password], Phone, isDeleted FROM inserted;
-END;
-GO
