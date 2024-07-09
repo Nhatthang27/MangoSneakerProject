@@ -37,8 +37,12 @@
         <servlet-class>mangosneaker.controller.SortProductController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>SearchProductNameController</servlet-name>
-        <servlet-class>mangosneaker.controller.SearchProductNameController</servlet-class>
+        <servlet-name>GetSingleProductController</servlet-name>
+        <servlet-class>mangosneaker.controller.GetSingleProductController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddToCartController</servlet-name>
+        <servlet-class>mangosneaker.controller.AddToCartController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetAllProductsController</servlet-name>
@@ -53,8 +57,12 @@
         <url-pattern>/SortProductController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>SearchProductNameController</servlet-name>
-        <url-pattern>/SearchProductNameController</url-pattern>
+        <servlet-name>GetSingleProductController</servlet-name>
+        <url-pattern>/GetSingleProductController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddToCartController</servlet-name>
+        <url-pattern>/AddToCartController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

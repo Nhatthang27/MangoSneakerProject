@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="mangosneaker.model.dto.ProductDTO" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -117,49 +119,24 @@
                     </form>
                     <div class="row">
                         <c:forEach items="${requestScope.proList}" var="p">
-                            <div class="col-md-3">
+                            <form class="col-md-3" action="DispatcherProductController?action=GetSingleProduct" method="POST">
                                 <div class="card mb-4 product-wap rounded-0">
+                                    <input type="hidden" name="productId" value="${p.id}">
                                     <div class="card rounded-0">
-                                        <img class="card-img rounded-0 img-fluid" src="assets/img/product/${p.img}">
-                                        <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
-                                            <ul class="list-unstyled">
-                                                <li><a class="btn btn-success text-white" href="shop-single.jsp"><i class="far fa-heart"></i></a></li>
-                                                <li><a class="btn btn-success text-white mt-2" href="shop-single.jsp"><i class="far fa-eye"></i></a></li>
-                                                <li><a class="btn btn-success text-white mt-2" href="shop-single.jsp"><i class="fas fa-cart-plus"></i></a></li>
-                                            </ul>
-                                        </div>
+                                        <button type="submit" class="button-reset">
+                                            <img class="card-img rounded-0 img-fluid" src="assets/img/product/${p.img}">
+                                        </button>
                                     </div>
                                     <div class="card-body">
-                                        <a href="shop-single.jsp" class="h3 text-decoration-none fw-bold">${p.name}</a>
-                                        <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
-                                            <li class="pt-2">
-                                                <span class="product-color-dot color-dot-red float-left rounded-circle ml-1"></span>
-                                                <span class="product-color-dot color-dot-blue float-left rounded-circle ml-1"></span>
-                                                <span class="product-color-dot color-dot-black float-left rounded-circle ml-1"></span>
-                                                <span class="product-color-dot color-dot-light float-left rounded-circle ml-1"></span>
-                                                <span class="product-color-dot color-dot-green float-left rounded-circle ml-1"></span>
-                                            </li>
-                                        </ul>
-                                        <p class="text-start mb-0 fw-normal">$${p.price}</p>
+                                        <button type="submit" class="button-reset">
+                                            <p class="fw-bold h3">${p.name}</p>
+                                            <p class="text-start mb-0 fw-normal">${p.price}</p>
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-
+                            </form>
                         </c:forEach>
                     </div>
-                    <!--                    <div div="row">
-                                            <ul class="pagination pagination-lg justify-content-end">
-                                                <li class="page-item disabled">
-                                                    <a class="page-link active rounded-0 mr-3 shadow-sm border-top-0 border-left-0" href="#" tabhome="-1">1</a>
-                                                </li>
-                                                <li class="page-item">
-                                                    <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 text-dark" href="#">2</a>
-                                                </li>
-                                                <li class="page-item">
-                                                    <a class="page-link rounded-0 shadow-sm border-top-0 border-left-0 text-dark" href="#">3</a>
-                                                </li>
-                                            </ul>
-                                        </div>-->
                 </div>
 
             </div>

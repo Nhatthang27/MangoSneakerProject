@@ -4,29 +4,34 @@
  */
 package mangosneaker.model.dto;
 
+import java.io.Serializable;
+import mangosneaker.model.dao.CategoryDAO;
+
 /**
  *
  * @author Nhatthang
  */
-public class ProductDTO {
+public class ProductDTO implements Serializable{
     
     private int id;
-    private int categoryId;
+    private CategoryDTO category;
     private String name;
     private double price;
     private String img;
     private double discount;
+    private String description;
 
     public ProductDTO() {
     }
 
-    public ProductDTO(int id, int categoryId, String name, double price, String img, double discount) {
+    public ProductDTO(int id, CategoryDTO category, String name, double price, String img, double discount, String description) {
         this.id = id;
-        this.categoryId = categoryId;
+        this.category = category;
         this.name = name;
         this.price = price;
         this.img = img;
         this.discount = discount;
+        this.description = description;
     }
 
     public int getId() {
@@ -37,12 +42,12 @@ public class ProductDTO {
         this.id = id;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public CategoryDTO getCategory() {
+        return category;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(CategoryDTO category) {
+        this.category = category;
     }
 
     public String getName() {
@@ -77,12 +82,20 @@ public class ProductDTO {
         this.discount = discount;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
-        return "Product{" + "id=" + id + ", categoryId=" + categoryId + ", name=" + name + ", price=" + price + ", img=" + img + ", discount=" + discount + '}';
+        return "ProductDTO{" + "id=" + id + ", category=" + category + ", name=" + name + ", price=" + price + ", img=" + img + ", discount=" + discount + ", description=" + description + '}';
     }
 
     
-    
+
     
 }

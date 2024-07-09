@@ -48,4 +48,21 @@ public class CategoryDAO implements Serializable {
         } 
         return cateList;
     }
+    
+    public CategoryDTO getCategoryByCid(int cid) throws ClassNotFoundException, SQLException {
+        CategoryDTO cate = null;
+        String sql = "SELECT [ID]\n"
+                + "      ,[CategoryName]\n"
+                + "  FROM [dbo].[Category]"
+                + "  WHERE ID = ?";
+        try ( Connection con = new DBContext(sc).getConnection();  PreparedStatement st = con.prepareStatement(sql);) {
+            st.setInt(1, cid);
+            try ( ResultSet rs = st.executeQuery();) {
+                if (rs.next()) {
+                    cate = new CategoryDTO(rs.getInt("ID"), rs.getString("CategoryName"));
+                }
+            }
+        } 
+        return cate;
+    }
 }

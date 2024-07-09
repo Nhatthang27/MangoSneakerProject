@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,6 +38,7 @@ public class ProductDAO implements Serializable {
                 + "      ,[Price]\n"
                 + "      ,[Image]\n"
                 + "      ,[Discount]\n"
+                + "      ,[Description]\n"
                 + "  FROM [dbo].[Product]\n"
                 + "  WHERE 1 = 1\n");
         if (cid != null && cid > 0) {
@@ -63,8 +65,8 @@ public class ProductDAO implements Serializable {
             }
             try ( ResultSet rs = st.executeQuery();) {
                 while (rs.next()) {
-                    ProductDTO p = new ProductDTO(rs.getInt("ID"), rs.getInt("CategoryID"), rs.getString("ProductName"),
-                            rs.getDouble("Price"), rs.getString("Image"), rs.getDouble("Discount"));
+                    ProductDTO p = new ProductDTO(rs.getInt("ID"), new CategoryDAO(sc).getCategoryByCid(rs.getInt("CategoryID")), rs.getString("ProductName"),
+                            rs.getDouble("Price"), rs.getString("Image"), rs.getDouble("Discount"), rs.getString("Description"));
                     if (proList == null) {
                         proList = new ArrayList<>();
                     }
@@ -73,5 +75,49 @@ public class ProductDAO implements Serializable {
             }
         }
         return proList;
+    }
+
+    public ProductDTO getProductById(int pId) throws ClassNotFoundException, SQLException {
+        ProductDTO product = null;
+        String sql = "SELECT [ID]\n"
+                + "      ,[CategoryID]\n"
+                + "      ,[ProductName]\n"
+                + "      ,[Price]\n"
+                + "      ,[Image]\n"
+                + "      ,[Discount]\n"
+                + "      ,[Description]\n"
+                + "  FROM [dbo].[Product]\n"
+                + "  WHERE ID = ?\n";
+
+        try ( Connection con = new DBContext(sc).getConnection();  PreparedStatement st = con.prepareStatement(sql.toString());) {
+            st.setInt(1, pId);
+            try ( ResultSet rs = st.executeQuery();) {
+                if (rs.next()) {
+                    product = new ProductDTO(rs.getInt("ID"), new CategoryDAO(sc).getCategoryByCid(rs.getInt("CategoryID")), rs.getString("ProductName"),
+                            rs.getDouble("Price"), rs.getString("Image"), rs.getDouble("Discount"), rs.getString("Description"));
+                }
+            }
+        }
+        return product;
+    }
+
+    public HashMap<Integer, Integer> getSizeNQuantity(int pId) throws ClassNotFoundException, SQLException {
+        HashMap<Integer, Integer> szQuan = null;
+        String sql = "SELECT [SizeNumber]\n"
+                + "      ,[Quantity]\n"
+                + "  FROM [dbo].[ProductSize]"
+                + "  WHERE [ProductID] = ?";
+        try ( Connection con = new DBContext(sc).getConnection(); PreparedStatement st = con.prepareStatement(sql);) {
+            st.setInt(1, pId);
+            try ( ResultSet rs = st.executeQuery()) {
+                while(rs.next()) {
+                    if (szQuan == null) {
+                        szQuan = new HashMap<>();
+                    }
+                    szQuan.put(rs.getInt("SizeNumber"), rs.getInt("Quantity"));
+                }
+            }
+        }
+        return szQuan;
     }
 }

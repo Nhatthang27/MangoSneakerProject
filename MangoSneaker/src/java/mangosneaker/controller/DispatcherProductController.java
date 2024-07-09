@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mangosneaker.model.dto.ProductDTO;
 
 /**
  *
@@ -30,11 +31,15 @@ public class DispatcherProductController extends HttpServlet {
     private final String GET_ALL_CATEGORIES_CONTROLLER_ACTION = "GetAllCategories";
     private final String GET_ALL_CATEGORIES_CONTROLLER = "GetAllCategoriesController";
     
-    private final String SORT_PRODUCT_CONTROLLER_ACTION = "SortProduct";
-    private final String SORT_PRODUCT_CONTROLLER = "SortProductController";
+    private final String SHOP_SINGLE_PAGE_ACTION = "ShopSinglePage";
+    private final String SHOP_SINGLE_PAGE = "ShopSinglePage.jsp";
     
-    private final String SEARCH_PRODUCT_NAME_CONTROLLER_ACTION = "SearchProductName";
-    private final String SEARCH_PRODUCT_NAME_CONTROLLER = "SearchProductNameController";
+    private final String GET_SINGLE_PRODUCT_CONTROLLER_ACTION = "GetSingleProduct";
+    private final String GET_SINGLE_PRODUCT_CONTROLLER= "GetSingleProductController";
+    
+    private final String ADD_TO_CART_CONTROLLER_ACTION = "AddToCart";
+    private final String ADD_TO_CART_CONTROLLER = "AddToCartController";
+    
     
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -49,7 +54,7 @@ public class DispatcherProductController extends HttpServlet {
         
         String action = request.getParameter("action");
         String url = HOME_PAGE;
-        
+        System.out.println("Dispatcher: " + action);
         switch (action) {
             case HOME_PAGE_ACTION:
                 url = HOME_PAGE;
@@ -60,8 +65,14 @@ public class DispatcherProductController extends HttpServlet {
             case GET_ALL_PRODUCTS_CONTROLLER_ACTION:
                 url = GET_ALL_PRODUCTS_CONTROLLER;
                 break;
-            case SEARCH_PRODUCT_NAME_CONTROLLER_ACTION:
-                url = SEARCH_PRODUCT_NAME_CONTROLLER;
+            case SHOP_SINGLE_PAGE_ACTION:
+                url = SHOP_SINGLE_PAGE;
+                break;
+            case GET_SINGLE_PRODUCT_CONTROLLER_ACTION:
+                url = GET_SINGLE_PRODUCT_CONTROLLER;
+                break;  
+            case ADD_TO_CART_CONTROLLER_ACTION:
+                url = ADD_TO_CART_CONTROLLER;
                 break;
         }
         request.getRequestDispatcher(url).forward(request, response);
