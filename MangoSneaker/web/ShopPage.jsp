@@ -30,11 +30,11 @@
 
     <body>
         <!-- Start Top Nav -->
-        <%@include file="topnav.jsp" %>
+        <%@include file="TopNav.jsp" %>
         <!-- Close Top Nav -->
 
         <!-- Header -->
-        <%@include file="navbar.jsp" %>
+        <%@include file="Header.jsp" %>
         <!-- Close Header -->
 
         <!-- Start Content -->
