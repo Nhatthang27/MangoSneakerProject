@@ -150,7 +150,6 @@ public class CustomerDAO implements GenericDAO<CustomerDTO> {
             st.setBoolean(6, customer.isIsDeleted());
             st.setInt(7, customer.getId());
             rs = st.executeUpdate();
-
         }
         return rs;
     }
