@@ -30,15 +30,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="DispatcherProductController?action=HomePage">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="about.jsp">About</a>
-                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" href="DispatcherProductController?action=GetAllProducts">Shop</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="contact.jsp">Contact</a>
-                            </li>
+
                         </ul>
                     </div>
                     <div class="navbar align-self-center d-flex">
@@ -53,23 +49,10 @@
                         </div>
                         <!--End Mobile-->
 
-
+                        <!--search icon-->
                         <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
                             <i class="fa fa-fw fa-search text-dark mr-2"></i>
                         </a>  
-
-                        <!--Cart Icon-->
-                        <a class="nav-icon position-relative text-decoration-none" href="#">
-                            <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
-                            <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
-                        </a>
-
-                        <!--User Icon-->
-                        <a class="nav-icon position-relative text-decoration-none" href="#">
-                            <i class="fa fa-fw fa-user text-dark mr-3"></i>
-                            <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
-                        </a>
-
                     </div>
                 </div>
 
@@ -89,7 +72,6 @@
                         </form>
                     </div>
                 </div>
-
             </div>
         </nav>
     </body>
