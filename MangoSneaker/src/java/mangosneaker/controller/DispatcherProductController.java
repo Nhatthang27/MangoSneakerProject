@@ -40,6 +40,9 @@ public class DispatcherProductController extends HttpServlet {
     private final String ADD_TO_CART_CONTROLLER_ACTION = "AddToCart";
     private final String ADD_TO_CART_CONTROLLER = "AddToCartController";
     
+    private final String CART_PAGE_ACTION = "CartPage";
+    private final String CART_PAGE = "CartPage.jsp";
+    
     
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -73,6 +76,9 @@ public class DispatcherProductController extends HttpServlet {
                 break;  
             case ADD_TO_CART_CONTROLLER_ACTION:
                 url = ADD_TO_CART_CONTROLLER;
+                break;
+            case CART_PAGE_ACTION:
+                url = CART_PAGE;
                 break;
         }
         request.getRequestDispatcher(url).forward(request, response);

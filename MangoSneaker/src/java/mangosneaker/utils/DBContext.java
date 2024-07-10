@@ -1,9 +1,18 @@
+//<<<<<<< HEAD
+//=======
+//
+//
+//>>>>>>> feature/customer-merge-test
 package mangosneaker.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.servlet.ServletContext;
+
+import java.sql.SQLException;
+
+
 
 public class DBContext {
     private String hostname;
@@ -32,4 +41,8 @@ public class DBContext {
        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
        return DriverManager.getConnection(getURLString());
     }
+//<<<<<<< HEAD
 }
+//=======
+//}
+//>>>>>>> feature/customer-merge-test

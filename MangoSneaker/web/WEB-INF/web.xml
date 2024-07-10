@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <!--<<<<<<< HEAD-->
     <context-param>
         <param-name>hostname</param-name>
         <param-value>localhost</param-value>
@@ -63,6 +64,63 @@
     <servlet-mapping>
         <servlet-name>AddToCartController</servlet-name>
         <url-pattern>/AddToCartController</url-pattern>
+    </servlet-mapping>
+    <!--=======-->
+    <servlet>
+        <servlet-name>LoginController</servlet-name>
+        <servlet-class>mangosneaker.controller.LoginController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterController</servlet-name>
+        <servlet-class>mangosneaker.controller.RegisterController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutController</servlet-name>
+        <servlet-class>mangosneaker.controller.LogoutController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MainAuthenticationController</servlet-name>
+        <servlet-class>mangosneaker.controller.MainAuthenticationController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateCustomerController</servlet-name>
+        <servlet-class>mangosneaker.controller.UpdateCustomerController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdatePasswordController</servlet-name>
+        <servlet-class>mangosneaker.controller.UpdatePasswordController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteCustomerController</servlet-name>
+        <servlet-class>mangosneaker.controller.DeleteCustomerController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginController</servlet-name>
+        <url-pattern>/LoginController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterController</servlet-name>
+        <url-pattern>/RegisterController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutController</servlet-name>
+        <url-pattern>/LogoutController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MainAuthenticationController</servlet-name>
+        <url-pattern>/MainAuthenticationController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCustomerController</servlet-name>
+        <url-pattern>/UpdateCustomerController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdatePasswordController</servlet-name>
+        <url-pattern>/UpdatePasswordController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteCustomerController</servlet-name>
+        <url-pattern>/DeleteCustomerController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

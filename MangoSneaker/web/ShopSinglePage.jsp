@@ -10,7 +10,7 @@
 <html lang="en">
 
     <head>
-        <title>Zay Shop - Product Detail Page</title>
+        <title>Mango Shop - Product Detail Page</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -170,7 +170,7 @@
 
 
         <!-- Start Footer -->
-        <%--<%@include file="" %>--%>
+        <%@include file="Footer.jsp" %>
         <!-- End Footer -->
 
         <!-- Start Script -->

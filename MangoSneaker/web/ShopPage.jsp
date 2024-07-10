@@ -105,7 +105,8 @@
             </div>
         </div>
         <!-- End Content -->
-
+        <%@include file="Brands.jsp"%>
+        <%@include file="Footer.jsp"%>
         <!-- Start Script -->
         <script src="assets/js/jquery-1.11.0.min.js"></script>
         <script src="assets/js/jquery-migrate-1.2.1.min.js"></script>
@@ -123,6 +124,6 @@
 
         </script>
         <!-- End Script -->
+        <!--</head>-->
     </body>
-
 </html>
