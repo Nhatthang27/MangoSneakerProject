@@ -33,10 +33,6 @@ https://templatemo.com/tm-559-zay-shop
 </head>
 
 <body>
-    <!-- Start Top Nav -->
-    <%@include file="TopNav.jsp" %>
-    <!-- Close Top Nav -->
-
     <!-- Header -->
     <%@include file="Header.jsp" %>
     <!-- Close Header -->

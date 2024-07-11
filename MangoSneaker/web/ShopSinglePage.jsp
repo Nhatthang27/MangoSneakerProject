@@ -31,9 +31,6 @@
     </head>
 
     <body>    
-        <!-- Start Top Nav -->
-        <%@include file="TopNav.jsp" %>
-        <!-- Close Top Nav -->
 
         <!-- Header -->
         <%@include file="Header.jsp" %>
