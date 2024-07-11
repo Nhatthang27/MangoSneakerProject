@@ -1,163 +1,317 @@
-﻿CREATE DATABASE MangoSneakerDB
-USE MangoSneakerDB
-
-CREATE TABLE CartDetail (
-  CustomerID int NOT NULL, 
-  ProductID  int NOT NULL, 
-  Quantity   int NOT NULL, 
-  PRIMARY KEY (CustomerID, 
-  ProductID));
-CREATE TABLE Category (
-  ID           int IDENTITY NOT NULL, 
-  CategoryName varchar(50) NOT NULL UNIQUE, 
-  PRIMARY KEY (ID));
-CREATE TABLE Customer (
-  ID        int IDENTITY NOT NULL, 
-  FirstName varchar(50) NOT NULL, 
-  LastName  varchar(50) NOT NULL, 
-  Mail      varchar(50) NOT NULL UNIQUE, 
-  Username  varchar(50) NOT NULL UNIQUE, 
-  [Password]  varchar(50) NOT NULL, 
-  Phone     varchar(10) NOT NULL UNIQUE, 
-  PRIMARY KEY (ID));
-CREATE TABLE [Order] (
-  ID         int IDENTITY NOT NULL, 
-  CustomerID int NOT NULL, 
-  [Date]     varchar(10) NOT NULL, 
-  PRIMARY KEY (ID));
-CREATE TABLE OrderDetail (
-  OrderID   int NOT NULL, 
-  ProductID int NOT NULL, 
-  Quantity  int NOT NULL, 
-  UnitPrice float(10) NOT NULL, 
-  PRIMARY KEY (OrderID, 
-  ProductID));
-CREATE TABLE Product (
-  ID          int IDENTITY NOT NULL, 
-  CategoryID  int NOT NULL, 
-  ProductName varchar(50) NOT NULL UNIQUE, 
-  Price       float(10) NOT NULL, 
-  [Image]       varchar(50) NOT NULL, 
-  Discount    float(5) NOT NULL, 
-  PRIMARY KEY (ID));
-CREATE TABLE ProductSize (
-  ProductID  int NOT NULL, 
-  SizeNumber int NOT NULL, 
-  Quantity   int NOT NULL, 
-  PRIMARY KEY (ProductID, 
-  SizeNumber));
-CREATE TABLE [Size] (
-  SizeNumber int NOT NULL, 
-  PRIMARY KEY (SizeNumber));
-
-ALTER TABLE Product ADD CONSTRAINT FK_Category_Product_CategoryID FOREIGN KEY (CategoryID) REFERENCES Category (ID);
-ALTER TABLE CartDetail ADD CONSTRAINT FK_Customer_CartDetail_CustomerID FOREIGN KEY (CustomerID) REFERENCES Customer (ID);
-ALTER TABLE [Order] ADD CONSTRAINT FK_Customer_Order_CustomerID FOREIGN KEY (CustomerID) REFERENCES Customer (ID);
-ALTER TABLE OrderDetail ADD CONSTRAINT FK_Order_OrderDetail_OrderID FOREIGN KEY (OrderID) REFERENCES [Order] (ID);
-ALTER TABLE CartDetail ADD CONSTRAINT FK_Product_CartDetail_ProductID FOREIGN KEY (ProductID) REFERENCES Product (ID);
-ALTER TABLE OrderDetail ADD CONSTRAINT FK_Product_OrderDetail_ProductID FOREIGN KEY (ProductID) REFERENCES Product (ID);
-ALTER TABLE ProductSize ADD CONSTRAINT FK_Product_ProductSize_ProductID FOREIGN KEY (ProductID) REFERENCES Product (ID);
-ALTER TABLE ProductSize ADD CONSTRAINT FK_Size_ProductSize_SizeNumber FOREIGN KEY (SizeNumber) REFERENCES [Size] (SizeNumber);
-
-ALTER TABLE OrderDetail
-ADD CONSTRAINT CK_OrderDetail_UnitPrice_Positive CHECK (UnitPrice > 0)
-
-ALTER TABLE Product
-ADD CONSTRAINT CK_Product_Price_Positive CHECK (Price > 0)
-
-ALTER TABLE Product
-ADD CONSTRAINT CK_Product_Discount_NonNegative CHECK (Discount >= 0)
-
-ALTER TABLE ProductSize
-ADD CONSTRAINT CK_ProductSize_Quantity_Positive CHECK (Quantity > 0)
-
-ALTER TABLE Customer 
-ADD isDeleted BIT DEFAULT 0;
-
-ALTER TABLE Customer
-ADD CONSTRAINT DF_Customer_isDeleted DEFAULT 0 FOR isDeleted;
-
-ALTER TABLE Customer
-ALTER COLUMN isDeleted BIT NOT NULL;
-
+USE [master]
 GO
-CREATE TRIGGER trg_After_Customer_isDeleted_Change
-ON Customer
-AFTER UPDATE
-AS
-BEGIN
-	DELETE FROM CartDetail
-	WHERE CustomerID IN (SELECT ID FROM inserted WHERE isDeleted = 1)
-END;
+/****** Object:  Database [MangoSneakerDB]    Script Date: 7/11/2024 2:56:45 PM ******/
+CREATE DATABASE [MangoSneakerDB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'MangoSneakerDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.NHATTHANG\MSSQL\DATA\MangoSneakerDB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'MangoSneakerDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.NHATTHANG\MSSQL\DATA\MangoSneakerDB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
 GO
-
-ALTER TABLE Customer
-ADD CONSTRAINT UQ_Customer_Mail UNIQUE (Mail);
-
-ALTER TABLE Customer
-ADD CONSTRAINT UQ_Customer_Username UNIQUE (Username);
-
-ALTER TABLE Customer
-ADD CONSTRAINT UQ_Customer_Phone UNIQUE (Phone);
-
-ALTER TABLE Customer
-ADD CONSTRAINT VALID_Phone
-CHECK (
-    (Phone LIKE '07[0-9]%' OR Phone LIKE '08[0-9]%' OR Phone LIKE '09[0-9]%')
-    AND LEN(Phone) = 10
-);
-
-ALTER TABLE Product
-ADD [Description] VARCHAR(500)
-
-
-ALTER TABLE dbo.CartDetail
-ADD [SizeNumber] INT NOT NULL DEFAULT 37;
-
-
--- Thêm khóa chính mới
-ALTER TABLE dbo.CartDetail
-ADD CONSTRAINT PK_CartDetail PRIMARY KEY (CustomerID, ProductID, SizeNumber);
-
-ALTER TABLE dbo.CartDetail
-ADD CONSTRAINT FK_CartDetail_Size FOREIGN KEY (SizeNumber)
-REFERENCES dbo.Size(SizeNumber);
-
-ALTER TABLE dbo.CartDetail
-ADD Quanity INT NOT NULL DEFAULT 1 CHECK (Quanity > 0)
-
-CREATE TRIGGER trg_UpdateQuantityOnDuplicate
-ON dbo.CartDetail
-INSTEAD OF INSERT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    -- Vòng lặp qua mỗi hàng được đề xuất để chèn
-    DECLARE @CustomerId INT, @ProductId INT, @SizeNumber INT, @Quantity INT;
-
-    -- Duyệt qua tất cả các hàng trong bộ đệm INSERT
-    SELECT @CustomerId = CustomerId, @ProductId = ProductId, @SizeNumber = SizeNumber, @Quantity = Quantity
-    FROM inserted;
-
-    -- Kiểm tra xem có bản ghi trùng khớp nào không
-    IF EXISTS (
-        SELECT 1 FROM dbo.CartDetail
-        WHERE CustomerId = @CustomerId AND ProductId = @ProductId AND SizeNumber = @SizeNumber
-    )
-    BEGIN
-        -- Nếu có, tăng số lượng cho bản ghi hiện tại
-        UPDATE dbo.CartDetail
-        SET Quantity = Quantity + @Quantity
-        WHERE CustomerId = @CustomerId AND ProductId = @ProductId AND SizeNumber = @SizeNumber;
-    END
-    ELSE
-    BEGIN
-        -- Nếu không, chèn hàng mới
-        INSERT INTO dbo.CartDetail (CustomerId, ProductId, SizeNumber, Quantity)
-        VALUES (@CustomerId, @ProductId, @SizeNumber, @Quantity);
-    END
-END;
+ALTER DATABASE [MangoSneakerDB] SET COMPATIBILITY_LEVEL = 160
 GO
-
-
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [MangoSneakerDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [MangoSneakerDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [MangoSneakerDB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [MangoSneakerDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [MangoSneakerDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [MangoSneakerDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [MangoSneakerDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [MangoSneakerDB] SET  MULTI_USER 
+GO
+ALTER DATABASE [MangoSneakerDB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [MangoSneakerDB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [MangoSneakerDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [MangoSneakerDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [MangoSneakerDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [MangoSneakerDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [MangoSneakerDB] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [MangoSneakerDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [MangoSneakerDB]
+GO
+/****** Object:  Table [dbo].[CartDetail]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CartDetail](
+	[CustomerID] [int] NOT NULL,
+	[ProductID] [int] NOT NULL,
+	[SizeNumber] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+ CONSTRAINT [PK_CartDetail] PRIMARY KEY CLUSTERED 
+(
+	[CustomerID] ASC,
+	[ProductID] ASC,
+	[SizeNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Category]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Category](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CategoryName] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[CategoryName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Customer]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customer](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [varchar](50) NOT NULL,
+	[LastName] [varchar](50) NOT NULL,
+	[Mail] [varchar](50) NOT NULL,
+	[Username] [varchar](50) NOT NULL,
+	[Password] [varchar](50) NOT NULL,
+	[Phone] [varchar](10) NOT NULL,
+	[isDeleted] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Customer_Mail] UNIQUE NONCLUSTERED 
+(
+	[Mail] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Customer_Phone] UNIQUE NONCLUSTERED 
+(
+	[Phone] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Customer_Username] UNIQUE NONCLUSTERED 
+(
+	[Username] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Order]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Order](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerID] [int] NOT NULL,
+	[Date] [varchar](10) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[OrderDetail]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[OrderDetail](
+	[OrderID] [int] NOT NULL,
+	[ProductID] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[UnitPrice] [real] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[OrderID] ASC,
+	[ProductID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Product]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Product](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CategoryID] [int] NOT NULL,
+	[ProductName] [varchar](50) NOT NULL,
+	[Price] [real] NOT NULL,
+	[Image] [varchar](50) NOT NULL,
+	[Discount] [real] NOT NULL,
+	[Description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[ProductName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ProductSize]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ProductSize](
+	[ProductID] [int] NOT NULL,
+	[SizeNumber] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ProductID] ASC,
+	[SizeNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Size]    Script Date: 7/11/2024 2:56:45 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Size](
+	[SizeNumber] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[SizeNumber] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CartDetail] ADD  DEFAULT ((37)) FOR [SizeNumber]
+GO
+ALTER TABLE [dbo].[CartDetail] ADD  DEFAULT ((1)) FOR [Quantity]
+GO
+ALTER TABLE [dbo].[Customer] ADD  CONSTRAINT [DF_Customer_isDeleted]  DEFAULT ((0)) FOR [isDeleted]
+GO
+ALTER TABLE [dbo].[CartDetail]  WITH CHECK ADD  CONSTRAINT [FK_CartDetail_Size] FOREIGN KEY([SizeNumber])
+REFERENCES [dbo].[Size] ([SizeNumber])
+GO
+ALTER TABLE [dbo].[CartDetail] CHECK CONSTRAINT [FK_CartDetail_Size]
+GO
+ALTER TABLE [dbo].[CartDetail]  WITH CHECK ADD  CONSTRAINT [FK_Customer_CartDetail_CustomerID] FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[Customer] ([ID])
+GO
+ALTER TABLE [dbo].[CartDetail] CHECK CONSTRAINT [FK_Customer_CartDetail_CustomerID]
+GO
+ALTER TABLE [dbo].[CartDetail]  WITH CHECK ADD  CONSTRAINT [FK_Product_CartDetail_ProductID] FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Product] ([ID])
+GO
+ALTER TABLE [dbo].[CartDetail] CHECK CONSTRAINT [FK_Product_CartDetail_ProductID]
+GO
+ALTER TABLE [dbo].[Order]  WITH CHECK ADD  CONSTRAINT [FK_Customer_Order_CustomerID] FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[Customer] ([ID])
+GO
+ALTER TABLE [dbo].[Order] CHECK CONSTRAINT [FK_Customer_Order_CustomerID]
+GO
+ALTER TABLE [dbo].[OrderDetail]  WITH CHECK ADD  CONSTRAINT [FK_Order_OrderDetail_OrderID] FOREIGN KEY([OrderID])
+REFERENCES [dbo].[Order] ([ID])
+GO
+ALTER TABLE [dbo].[OrderDetail] CHECK CONSTRAINT [FK_Order_OrderDetail_OrderID]
+GO
+ALTER TABLE [dbo].[OrderDetail]  WITH CHECK ADD  CONSTRAINT [FK_Product_OrderDetail_ProductID] FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Product] ([ID])
+GO
+ALTER TABLE [dbo].[OrderDetail] CHECK CONSTRAINT [FK_Product_OrderDetail_ProductID]
+GO
+ALTER TABLE [dbo].[Product]  WITH CHECK ADD  CONSTRAINT [FK_Category_Product_CategoryID] FOREIGN KEY([CategoryID])
+REFERENCES [dbo].[Category] ([ID])
+GO
+ALTER TABLE [dbo].[Product] CHECK CONSTRAINT [FK_Category_Product_CategoryID]
+GO
+ALTER TABLE [dbo].[ProductSize]  WITH CHECK ADD  CONSTRAINT [FK_Product_ProductSize_ProductID] FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Product] ([ID])
+GO
+ALTER TABLE [dbo].[ProductSize] CHECK CONSTRAINT [FK_Product_ProductSize_ProductID]
+GO
+ALTER TABLE [dbo].[ProductSize]  WITH CHECK ADD  CONSTRAINT [FK_Size_ProductSize_SizeNumber] FOREIGN KEY([SizeNumber])
+REFERENCES [dbo].[Size] ([SizeNumber])
+GO
+ALTER TABLE [dbo].[ProductSize] CHECK CONSTRAINT [FK_Size_ProductSize_SizeNumber]
+GO
+ALTER TABLE [dbo].[CartDetail]  WITH CHECK ADD CHECK  (([Quantity]>(0)))
+GO
+ALTER TABLE [dbo].[Customer]  WITH CHECK ADD  CONSTRAINT [VALID_Phone] CHECK  ((([Phone] like '07[0-9]%' OR [Phone] like '08[0-9]%' OR [Phone] like '09[0-9]%') AND len([Phone])=(10)))
+GO
+ALTER TABLE [dbo].[Customer] CHECK CONSTRAINT [VALID_Phone]
+GO
+ALTER TABLE [dbo].[OrderDetail]  WITH CHECK ADD  CONSTRAINT [CK_OrderDetail_Quantity_Positive] CHECK  (([Quantity]>(0)))
+GO
+ALTER TABLE [dbo].[OrderDetail] CHECK CONSTRAINT [CK_OrderDetail_Quantity_Positive]
+GO
+ALTER TABLE [dbo].[OrderDetail]  WITH CHECK ADD  CONSTRAINT [CK_OrderDetail_UnitPrice_Positive] CHECK  (([UnitPrice]>(0)))
+GO
+ALTER TABLE [dbo].[OrderDetail] CHECK CONSTRAINT [CK_OrderDetail_UnitPrice_Positive]
+GO
+ALTER TABLE [dbo].[Product]  WITH CHECK ADD  CONSTRAINT [CK_Product_Discount_NonNegative] CHECK  (([Discount]>=(0)))
+GO
+ALTER TABLE [dbo].[Product] CHECK CONSTRAINT [CK_Product_Discount_NonNegative]
+GO
+ALTER TABLE [dbo].[Product]  WITH CHECK ADD  CONSTRAINT [CK_Product_Price_Positive] CHECK  (([Price]>(0)))
+GO
+ALTER TABLE [dbo].[Product] CHECK CONSTRAINT [CK_Product_Price_Positive]
+GO
+ALTER TABLE [dbo].[ProductSize]  WITH CHECK ADD  CONSTRAINT [CK_ProductSize_Quantity_Positive] CHECK  (([Quantity]>(0)))
+GO
+ALTER TABLE [dbo].[ProductSize] CHECK CONSTRAINT [CK_ProductSize_Quantity_Positive]
+GO
+USE [master]
+GO
+ALTER DATABASE [MangoSneakerDB] SET  READ_WRITE 
+GO
