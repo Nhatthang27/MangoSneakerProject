@@ -33,18 +33,14 @@ public class UpdateCustomerController extends HttpServlet {
         String phone_raw = request.getParameter("phone");
         String mail_raw = request.getParameter("mail");
         String id_raw = request.getParameter("customerId");
-        System.out.println(id_raw);
         CustomerDAO cd = new CustomerDAO(getServletContext());
         String action = null;
 
         try {
             int id = Integer.parseInt(id_raw);
-            System.out.println(fname_raw);
             if (mangosneaker.utils.Util.isValidPhoneNumber(phone_raw)) {
-                System.out.println("hi");
                 CustomerDAO ad = new CustomerDAO(getServletContext());
                 CustomerDTO updateAcc = new CustomerDTO(id, fname_raw, lname_raw, mail_raw, uname_raw, phone_raw, false);
-                System.out.println(updateAcc);
                 if (ad.update(updateAcc) > 0) {
                     action = AUTHENTICATION_PAGE_ACTION;
                 } 
@@ -59,7 +55,6 @@ public class UpdateCustomerController extends HttpServlet {
         } catch (SQLException ex) {
             if (ex.getMessage().contains("[UQ_Customer_Username]")) {
                 request.setAttribute("err", "Username already exists.");
-                System.out.println("err");
             } else if (ex.getMessage().contains("UQ_Customer_Phone")) {
                 request.setAttribute("err", "Phone number already exists.");
             } else if (ex.getMessage().contains("[UQ_Customer_Mail]")) {

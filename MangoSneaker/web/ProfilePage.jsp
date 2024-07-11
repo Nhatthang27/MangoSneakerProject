@@ -16,7 +16,6 @@
     </head>
     <body>
         <header>
-            <%@include file="TopNav.jsp"%>
             <%@include file="Header.jsp"%>
         </header>
 

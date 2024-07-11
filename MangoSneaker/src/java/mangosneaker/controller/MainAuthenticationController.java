@@ -76,11 +76,9 @@ public class MainAuthenticationController extends HttpServlet {
                     url = LOGOUT_CONTROLLER;
                     break;
                 case UPDATE_CUSTOMER_CONTROLLER_ACTION:
-                    System.out.println("o day");
                     url = UPDATE_CUSTOMER_CONTROLLER;
                     break;
                 case UPDATE_PASSWORD_CONTROLLER_ACTION:
-                    System.out.println("o day");
                     url = UPDATE_PASSWORD_CONTROLLER;
                     break;
                 case UPDATE_CUSTOMER_PAGE_ACTION:

@@ -45,6 +45,14 @@
         <servlet-name>AddToCartController</servlet-name>
         <servlet-class>mangosneaker.controller.AddToCartController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ShowCartController</servlet-name>
+        <servlet-class>mangosneaker.controller.ShowCartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteProductInCartController</servlet-name>
+        <servlet-class>mangosneaker.controller.DeleteProductInCartController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GetAllProductsController</servlet-name>
         <url-pattern>/GetAllProductsController</url-pattern>
@@ -121,6 +129,14 @@
     <servlet-mapping>
         <servlet-name>DeleteCustomerController</servlet-name>
         <url-pattern>/DeleteCustomerController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ShowCartController</servlet-name>
+        <url-pattern>/ShowCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteProductInCartController</servlet-name>
+        <url-pattern>/DeleteProductInCartController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

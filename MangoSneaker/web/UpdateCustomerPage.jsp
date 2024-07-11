@@ -15,7 +15,6 @@
         <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     </head>
     <body>
-        <%@include file="TopNav.jsp"%>
         <%@include file="Header.jsp"%>
         <div class="container light-style flex-grow-1 container-p-y">
             <h1 class="font-weight-bold py-3 mb-4" style="color: #5a958a; text-align: center;">

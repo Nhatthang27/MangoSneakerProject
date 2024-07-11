@@ -31,7 +31,7 @@ $(document).ready(function() {
     });
     $('#btn-minus').click(function(){
       var val = $("#var-value").html();
-      val = (val=='1')?val:val-1;
+      val = (val==='1')?val:val-1;
       $("#var-value").html(val);
       $("#productQuantity").val(val);
       return false;

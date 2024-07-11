@@ -25,19 +25,9 @@
         <link rel="stylesheet" href="assets/css/fontawesome.min.css">
         <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-        <!--
-            
-        TemplateMo 559 Zay Shop
-        
-        https://templatemo.com/tm-559-zay-shop
-        
-        
-        -->
     </head>
 
     <body>
-        <!-- Start Top Nav -->
-        <%@include file="TopNav.jsp"%>
         <%@include file="Header.jsp"%>
 
         <section class="bg-success py-5">

@@ -13,19 +13,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import mangosneaker.model.dao.CartDetailDAO;
-import mangosneaker.model.dto.CustomerDTO;
 
 /**
  *
  * @author Nhatthang
  */
-public class AddToCartController extends HttpServlet {
+public class DeleteProductInCartController extends HttpServlet {
 
-    private final String GET_SINGLE_PRODUCT_CONTROLLER_ACTION = "GetSingleProduct";
     private final String SHOW_CART_CONTROLLER_ACTION = "ShowCart";
-    private final String AUTHENTICATION_PAGE_ACTION = "AuthenticationPage";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,31 +35,19 @@ public class AddToCartController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession sess = request.getSession();
-        CustomerDTO customer = (CustomerDTO) sess.getAttribute("information");
 
-        if (customer == null) {
-            request.getRequestDispatcher("MainAuthenticationController?action=" + AUTHENTICATION_PAGE_ACTION).forward(request, response);
-        } else {
-            int customerId = customer.getId();
-            int productId = Integer.parseInt(request.getParameter("productId"));
-            int quantity = Integer.parseInt(request.getParameter("productQuantity"));
+        int productID = Integer.parseInt(request.getParameter("productID"));
+        int customerID = Integer.parseInt(request.getParameter("customerID"));
+        int size = Integer.parseInt(request.getParameter("size"));
 
-            if (request.getParameter("productSize").isEmpty()) {
-                request.getRequestDispatcher("DispatcherProductController?action=" + GET_SINGLE_PRODUCT_CONTROLLER_ACTION).forward(request, response);
-            } else {
-                int size = Integer.parseInt(request.getParameter("productSize"));
-                CartDetailDAO cartDAO = new CartDetailDAO(getServletContext());
-                try {
-                    cartDAO.addToCart(customerId, productId, size, quantity);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(AddToCartController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(AddToCartController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            request.getRequestDispatcher("DispatcherProductController?action=" + SHOW_CART_CONTROLLER_ACTION).forward(request, response);
+        CartDetailDAO cartDAO = new CartDetailDAO(getServletContext());
+
+        try {
+            cartDAO.deleteProductInCart(customerID, productID, size);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(DeleteProductInCartController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        request.getRequestDispatcher("DispatcherProductController?action=" + SHOW_CART_CONTROLLER_ACTION).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

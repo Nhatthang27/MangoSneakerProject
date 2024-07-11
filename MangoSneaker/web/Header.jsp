@@ -100,7 +100,7 @@
                         <!--search icon-->
                         <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
                             <i class="fa fa-fw fa-search text-dark mr-2"></i>
-                        </a>  
+                        </a>&nbsp;  
                     </div>
                 </div>
 
@@ -125,14 +125,14 @@
 
                 <c:if test="${sessionScope.information != null}" >
                     <!--Cart icon-->
-                    <a class="nav-icon position-relative text-decoration-none" href="CartPage.jsp">
+                    <a class="nav-icon position-relative text-decoration-none" href="DispatcherProductController?action=ShowCart">
                         <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
-                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
-                    </a>
+                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">${numItem}</span>
+                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <!--user icon-->
                     <a class="nav-icon position-relative text-decoration-none" href="MainAuthenticationController?action=ProfilePage">
                         <i class="fa fa-fw fa-user text-dark mr-3"></i>
-                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
+                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"></span>
                     </a> 
                 </c:if>
 

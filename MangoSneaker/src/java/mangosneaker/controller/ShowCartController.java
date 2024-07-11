@@ -7,6 +7,7 @@ package mangosneaker.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -16,16 +17,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import mangosneaker.model.dao.CartDetailDAO;
 import mangosneaker.model.dto.CustomerDTO;
+import mangosneaker.model.dto.ProductInCartDTO;
 
 /**
  *
  * @author Nhatthang
  */
-public class AddToCartController extends HttpServlet {
+public class ShowCartController extends HttpServlet {
 
-    private final String GET_SINGLE_PRODUCT_CONTROLLER_ACTION = "GetSingleProduct";
-    private final String SHOW_CART_CONTROLLER_ACTION = "ShowCart";
     private final String AUTHENTICATION_PAGE_ACTION = "AuthenticationPage";
+    private final String CART_PAGE_ACTION = "CartPage";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,24 +46,26 @@ public class AddToCartController extends HttpServlet {
         if (customer == null) {
             request.getRequestDispatcher("MainAuthenticationController?action=" + AUTHENTICATION_PAGE_ACTION).forward(request, response);
         } else {
-            int customerId = customer.getId();
-            int productId = Integer.parseInt(request.getParameter("productId"));
-            int quantity = Integer.parseInt(request.getParameter("productQuantity"));
+            int customerID = customer.getId();
+            CartDetailDAO cartDao = new CartDetailDAO(getServletContext());
 
-            if (request.getParameter("productSize").isEmpty()) {
-                request.getRequestDispatcher("DispatcherProductController?action=" + GET_SINGLE_PRODUCT_CONTROLLER_ACTION).forward(request, response);
-            } else {
-                int size = Integer.parseInt(request.getParameter("productSize"));
-                CartDetailDAO cartDAO = new CartDetailDAO(getServletContext());
-                try {
-                    cartDAO.addToCart(customerId, productId, size, quantity);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(AddToCartController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(AddToCartController.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                int numItem = 0;
+                double totalPrice = 0;
+                List<ProductInCartDTO> cart = cartDao.getAllProductInCart(customerID);
+                if (cart != null) {
+                    for (ProductInCartDTO c : cart) {
+                        numItem += c.getQuantity();
+                        totalPrice += c.getQuantity() * c.getProduct().getPrice();
+                    }
                 }
+                request.setAttribute("totalPrice", totalPrice);
+                request.setAttribute("numItem", numItem);
+                request.setAttribute("cart", cart);
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(ShowCartController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            request.getRequestDispatcher("DispatcherProductController?action=" + SHOW_CART_CONTROLLER_ACTION).forward(request, response);
+            request.getRequestDispatcher("DispatcherProductController?action=" + CART_PAGE_ACTION).forward(request, response);
         }
     }
 
